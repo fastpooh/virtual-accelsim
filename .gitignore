@@ -1,0 +1,15 @@
+accel-sim-framework/env-setup/
+accel-sim-framework/gpu-app-collection/
+accel-sim-framework/hw_run/
+accel-sim-framework/sim_run_*
+accel-sim-framework/*.DS_Store*
+accel-sim-framework/*.csv
+accel-sim-framework/*.csv#
+accel-sim-framework/4.2/
+accel-sim-framework/gpucomputingsdk_4.2.9_linux.run
+accel-sim-framework/util/job_launching/*.txt
+.vscode/*
+extern
+accel-sim-framework/gpu-simulator/accel_sim.pyi
+accel-sim-framework/compile_commands.json
+accel-sim-framework/.cache
