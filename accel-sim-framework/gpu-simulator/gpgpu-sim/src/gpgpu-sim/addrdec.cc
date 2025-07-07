@@ -115,16 +115,15 @@ void linear_to_raw_address_translation::addrdec_tlx(new_addr_type addr,
     // - recreate the rest of the address by stitching the quotient of MSBs and
     // the LSBs
 
-    /*
     addr_for_chip = (addr >> ADDR_CHIP_S) % m_n_channel;
     rest_of_addr = ((addr >> ADDR_CHIP_S) / m_n_channel) << ADDR_CHIP_S;
     rest_of_addr_high_bits = ((addr >> ADDR_CHIP_S) / m_n_channel);
     rest_of_addr |= addr & ((1 << ADDR_CHIP_S) - 1);
-    */
     
+    /*
     addr_for_chip = (((addr >> 17) % 5) << 4) + ((addr >> 8) % 16);
     rest_of_addr = (((addr >> 17) / 5) << 17) + (((addr >> 12) & 31) << 8) + (addr & 255);
-    
+    */
 
     tlx->chip = addr_for_chip;
     tlx->bk = addrdec_packbits(addrdec_mask[BK], rest_of_addr,
