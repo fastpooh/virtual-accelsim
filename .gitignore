@@ -9,8 +9,7 @@ accel-sim-framework/4.2/
 accel-sim-framework/gpucomputingsdk_4.2.9_linux.run
 accel-sim-framework/util/job_launching/*.txt
 accel-sim-framework/gpu-simulator/gpgpu-sim/build
+accel-sim-framework/gpu-simulator/gpgpu-sim2
 .vscode/*
 extern
-accel-sim-framework/gpu-simulator/accel_sim.pyi
-accel-sim-framework/compile_commands.json
 accel-sim-framework/.cache
