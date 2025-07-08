@@ -41,7 +41,7 @@ tlb_hierarchy *m_tlb_hierarchy = nullptr;
 
 bool tlb_entry_t::lookup(translation_request* tr, uint64_t time)
 {
-    if ((tr->addr) >> 21 == page_num)
+    if ((tr->addr) >> 19 == page_num)
     {
         accessed_time = time;
         return true;
@@ -79,7 +79,7 @@ void set_t::insert_tlb_entry(translation_request* tr, uint64_t time)
     {
         if (m_entries[i].accessed_time == 1)
         {
-            m_entries[i].page_num = (tr->addr) >> 21;
+            m_entries[i].page_num = (tr->addr) >> 19;
             m_entries[i].accessed_time = time;
             return;
         }
@@ -92,7 +92,7 @@ void set_t::insert_tlb_entry(translation_request* tr, uint64_t time)
     }
 
     // Remove oldest entry and update with new access data
-    m_entries[last_accessed_idx].page_num = (tr->addr) >> 21;
+    m_entries[last_accessed_idx].page_num = (tr->addr) >> 19;
     m_entries[last_accessed_idx].accessed_time = time;
 }
 
@@ -104,7 +104,7 @@ bool set_t::lookup(translation_request* tr, uint64_t time)
         return true;
 
     // Other TLB layers
-    uint64_t page_number_for_print = (tr->addr)>>21;
+    uint64_t page_number_for_print = (tr->addr)>>19;
 
     // Loop through ways in a set
     for (unsigned i = 0; i < m_num_entries; i++)
@@ -262,7 +262,7 @@ unsigned u_tlb_t::get_set(uint64_t addr)
 
         case L2_u_TLB:
         case L3_u_TLB: {
-            uint64_t input_page_num = addr >> 21;
+            uint64_t input_page_num = addr >> 19;
             uint64_t set_index = input_page_num & (m_num_sets - 1);
             return set_index;
         }
@@ -281,8 +281,8 @@ void u_tlb_t::fill(translation_request* tr, uint64_t time)
     unsigned set_index = get_set(tr->addr);
     m_sets[set_index]->insert_tlb_entry(tr, time);
 
-    if (check_merged_page_exist((tr->addr)>>21, time))
-        m_merged_pages.remove((tr->addr)>>21);
+    if (check_merged_page_exist((tr->addr)>>19, time))
+        m_merged_pages.remove((tr->addr)>>19);
     m_completed_translations.push_back(tr);
 }
 
@@ -338,7 +338,7 @@ void u_tlb_t::access(uint64_t time)
         {
             translation_request* tr_merged = m_merged_translations.front();
             uint64_t access_addr_merged = tr_merged->addr;
-            uint64_t addr_page_merged = access_addr_merged >> 21;
+            uint64_t addr_page_merged = access_addr_merged >> 19;
             unsigned set_index_merged = get_set(access_addr_merged);
 
             if (m_sets[set_index_merged]->lookup(tr_merged, time))  // Outstanding hit
@@ -376,7 +376,7 @@ void u_tlb_t::access(uint64_t time)
                 m_translation_queue.pop();
 
                 uint64_t access_addr = tr->addr;
-                uint64_t addr_page = access_addr >> 21;
+                uint64_t addr_page = access_addr >> 19;
                 unsigned set_index = get_set(access_addr);
 
                 // If TLB hit
@@ -410,7 +410,7 @@ void u_tlb_t::access(uint64_t time)
             m_translation_queue.pop();
 
             uint64_t access_addr = tr->addr;
-            uint64_t addr_page = access_addr >> 21;
+            uint64_t addr_page = access_addr >> 19;
             unsigned set_index = get_set(access_addr);
 
             // If TLB hit
@@ -587,7 +587,7 @@ void tlb_hierarchy::commit_translation(uint64_t time, tlb_type type,
 
         //if (tr->m_mf->get_sid()/2 == 51 && m_l1_d_tlb[51]->has_page_in_tlb(66775061) && time > 520492)
         //{
-        //    printf("L2 -> L1 TLB[51]: page_num[%llu], time[%llu]\n", (unsigned long long)tr->addr >> 21, (unsigned long long)time);
+        //    printf("L2 -> L1 TLB[51]: page_num[%llu], time[%llu]\n", (unsigned long long)tr->addr >> 19, (unsigned long long)time);
         //}
 
 
@@ -666,7 +666,7 @@ void u_tlb_t::print_tlb_info_detail()
     for (unsigned j=0; j<10; j++)
     {
         translation_request* current_tr = m_merged_translations.front();
-        printf("%llu ",(unsigned long long)(current_tr->addr) >> 21);
+        printf("%llu ",(unsigned long long)(current_tr->addr) >> 19);
         m_merged_translations.pop();
     }
     printf("\n");
@@ -703,7 +703,7 @@ void u_tlb_t::print_all_for_debugging(uint64_t time)
     for (unsigned j=0; j<print_size1; j++)
     {
         translation_request* current_tr = tmp1.front();
-        printf("%llu ",(unsigned long long)(current_tr->addr) >> 21);
+        printf("%llu ",(unsigned long long)(current_tr->addr) >> 19);
         tmp1.pop();
     }
     printf("\n");
@@ -715,7 +715,7 @@ void u_tlb_t::print_all_for_debugging(uint64_t time)
     for (unsigned j=0; j<print_size2; j++)
     {
         translation_request* current_tr = tmp2.front();
-        printf("%llu ",(unsigned long long)(current_tr->addr) >> 21);
+        printf("%llu ",(unsigned long long)(current_tr->addr) >> 19);
         tmp2.pop();
     }
     printf("\n");
